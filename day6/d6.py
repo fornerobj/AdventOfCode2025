@@ -15,13 +15,10 @@ for col, op in zip(zip(*nums), ops):
     else:
         pt1 += math.prod(col)
 
-print("Part 1:", pt1)
-
 pt2 = 0
 current_nums = []
 height = len(data) - 1
 width  = len(data[0])
-
 for col in reversed(range(width)):
     # Build the number in this column
     digits = [data[row][col] for row in range(height) if data[row][col].isdigit()]
@@ -36,6 +33,7 @@ for col in reversed(range(width)):
             pt2 += math.prod(current_nums)
         current_nums.clear()
 
+print("Part 1:", pt1)
 print("Part 2:", pt2)
 
 
