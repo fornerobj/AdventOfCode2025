@@ -20,12 +20,10 @@ current_nums = []
 height = len(data) - 1
 width  = len(data[0])
 for col in reversed(range(width)):
-    # Build the number in this column
     digits = [data[row][col] for row in range(height) if data[row][col].isdigit()]
     if digits:
         current_nums.append(int("".join(digits)))
 
-    # If this column has an operator, evaluate & reset
     if col < len(data[-1]) and data[-1][col] in "+*":
         if data[-1][col] == '+':
             pt2 += sum(current_nums)
