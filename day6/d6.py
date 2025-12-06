@@ -2,42 +2,39 @@ import math
 
 with open("input", "r") as f:
     data = f.read().strip().splitlines()
-    ops = data[-1].split()
-    nums = [data[i].split() for i in range(len(data)-1)]
-    nums = [[int(item) for item in sublist] for sublist in nums]
+
+ops = data[-1].split()
+nums = [list(map(int, line.split())) for line in data[:-1]]
 
 n, m = len(nums), len(nums[0])
 
 pt1 = 0
-for pos in range(m):
-    subtotal = nums[0][pos]
-    for row in range(1,n):
-        if ops[pos] == '+':
-            subtotal+= nums[row][pos]
-        else:
-            subtotal *= nums[row][pos]
+for col, op in zip(zip(*nums), ops):
+    if op == '+':
+        pt1 += sum(col)
+    else:
+        pt1 += math.prod(col)
 
-    pt1 += subtotal
 print("Part 1:", pt1)
 
-
-lines = data
 pt2 = 0
-vert_nums = []
-for i in reversed(range(len(lines[0]))):
-    num = ""
-    for j in range(len(lines)-1):
-        if lines[j][i] != ' ':
-            num += lines[j][i]
-    if num != "":
-        vert_nums.append(int(num))
+current_nums = []
+height = len(data) - 1
+width  = len(data[0])
 
-    if(i < len(lines[-1]) and lines[-1][i] != ' '):
-        if lines[-1][i] == '+':
-            pt2 += sum(vert_nums)
+for col in reversed(range(width)):
+    # Build the number in this column
+    digits = [data[row][col] for row in range(height) if data[row][col].isdigit()]
+    if digits:
+        current_nums.append(int("".join(digits)))
+
+    # If this column has an operator, evaluate & reset
+    if col < len(data[-1]) and data[-1][col] in "+*":
+        if data[-1][col] == '+':
+            pt2 += sum(current_nums)
         else:
-            pt2 += math.prod(vert_nums)
-        vert_nums.clear()
+            pt2 += math.prod(current_nums)
+        current_nums.clear()
 
 print("Part 2:", pt2)
 
