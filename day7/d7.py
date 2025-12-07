@@ -1,6 +1,3 @@
-from collections import defaultdict
-
-
 def count_splits(grid):
     rows, cols = len(grid), len(grid[0])
     start = grid[0].find('S')
