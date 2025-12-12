@@ -30,6 +30,21 @@ def count_button_presses(goal, buttons):
                 q.append((new_lights, presses+1))
     return -1
 
+def solve_system(goal, buttons):
+    o = z3.Optimize()
+    vars = z3.Ints(f"n{i}" for i in range(len(buttons)))
+    for var in vars: o.add(var >= 0)
+    for i, joltage in enumerate(goal):
+        equation = 0
+        for b, button in enumerate(buttons):
+            if i in button:
+                equation += vars[b]
+        o.add(equation == joltage)
+    o.minimize(sum(vars))
+    o.check()
+    return o.model().eval(sum(vars)).as_long()
+
+
 pt1 = 0
 pt2 = 0
 for machine in machines:
@@ -39,19 +54,7 @@ for machine in machines:
     n = len(goal)
     buttons = [list(int(x) for x in button.strip("()").split(",")) for button in components[1:-1]]
     pt1 += count_button_presses(goal, buttons)
-
-    o = z3.Optimize()
-    vars = z3.Ints(f"n{i}" for i in range(len(buttons)))
-    for var in vars: o.add(var >= 0)
-    for i, joltage in enumerate(joltage_goal):
-        equation = 0
-        for b, button in enumerate(buttons):
-            if i in button:
-                equation += vars[b]
-        o.add(equation == joltage)
-    o.minimize(sum(vars))
-    o.check()
-    pt2 += o.model().eval(sum(vars)).as_long()
+    pt2 += solve_system(joltage_goal, buttons)
 
 print(f"Part 1: {pt1}")
 print(f"Part 2: {pt2}")
