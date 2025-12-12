@@ -1,5 +1,5 @@
 from collections import deque
-import re, z3
+import z3
 
 with open("input", "r") as f:
     machines = f.read().strip().splitlines()
@@ -30,6 +30,7 @@ def count_button_presses(goal, buttons):
                 q.append((new_lights, presses+1))
     return -1
 
+# Solution Copied from HypperNeutrino on Youtube!
 def solve_system(goal, buttons):
     o = z3.Optimize()
     vars = z3.Ints(f"n{i}" for i in range(len(buttons)))
